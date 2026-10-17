@@ -1,0 +1,1613 @@
+<!DOCTYPE html>
+<html lang="ru" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Книжная Гавань — Твой уютный онлайн-магазин книг</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Merriweather for headings, Inter for UI -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Merriweather:ital,wght@0,400;0,700;1,400&display=swap"
+        rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        navy: {
+                            800: '#1e293b',
+                            900: '#0f172a',
+                            950: '#090d16',
+                        },
+                        cream: {
+                            50: '#fdfbf7',
+                            100: '#f7f3e9',
+                            200: '#efe6d5',
+                        },
+                        terracotta: {
+                            500: '#c85a32',
+                            600: '#b04924',
+                        },
+                        amberGold: {
+                            400: '#fbbf24',
+                            500: '#f59e0b',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Merriweather', 'serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.05);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #c85a32;
+            border-radius: 4px;
+        }
+
+        /* Custom transition for theme toggling */
+        body {
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .line-clamp-2 {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+    </style>
+</head>
+
+<body
+    class="bg-cream-50 text-slate-800 dark:bg-navy-950 dark:text-slate-100 font-sans min-h-screen flex flex-col antialiased">
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2"></div>
+
+    <!-- HEADER / NAVIGATION -->
+    <header
+        class="sticky top-0 z-40 bg-cream-100/90 dark:bg-navy-900/90 backdrop-blur-md border-b border-cream-200 dark:border-slate-800 transition-colors">
+        <!-- Top Announcement Bar -->
+        <div class="bg-terracotta-500 text-white text-xs py-1.5 px-4 text-center font-medium">
+            ✨ Бесплатная доставка при заказе от 2 000 ₽! Испольуйте промокод <span
+                class="underline font-bold">READ20</span> для скидки 20%
+        </div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20 gap-4">
+
+                <!-- Logo -->
+                <a href="#home" onclick="showSection('catalog')" class="flex items-center gap-3 group shrink-0">
+                    <div
+                        class="w-10 h-10 rounded-xl bg-terracotta-500 text-white flex items-center justify-center text-xl shadow-md group-hover:rotate-6 transition-transform">
+                        <i class="fa-solid fa-book-open"></i>
+                    </div>
+                    <div>
+                        <span
+                            class="font-serif text-2xl font-bold tracking-tight text-navy-900 dark:text-amberGold-400 block leading-none">Книжная
+                            Гавань</span>
+                        <span
+                            class="text-[10px] tracking-widest text-slate-500 dark:text-slate-400 uppercase font-semibold">Онлайн-магазин</span>
+                    </div>
+                </a>
+
+                <!-- Search Bar -->
+                <div class="hidden md:flex flex-1 max-w-md relative">
+                    <input type="text" id="global-search" oninput="handleSearch(this.value)"
+                        placeholder="Поиск по названию, автору или жанру..."
+                        class="w-full pl-10 pr-4 py-2 rounded-full border border-slate-300 dark:border-slate-700 bg-white dark:bg-navy-800 text-sm focus:outline-none focus:ring-2 focus:ring-terracotta-500 dark:text-slate-100 placeholder-slate-400 transition">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-2.5 text-slate-400"></i>
+                    <button onclick="clearSearch()" id="clear-search-btn"
+                        class="hidden absolute right-3 top-2.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+                        <i class="fa-solid fa-circle-xmark"></i>
+                    </button>
+                </div>
+
+                <!-- Navigation Links & User Controls -->
+                <div class="flex items-center gap-2 sm:gap-4">
+                    <nav class="hidden lg:flex items-center gap-6 text-sm font-medium">
+                        <a href="#catalog" onclick="showSection('catalog')"
+                            class="hover:text-terracotta-500 transition">Каталог</a>
+                        <a href="#bestsellers" onclick="scrollToSection('bestsellers')"
+                            class="hover:text-terracotta-500 transition">Бестселлеры</a>
+                        <a href="#quiz" onclick="scrollToSection('quiz')"
+                            class="hover:text-terracotta-500 transition">Подбор книги</a>
+                        <a href="#articles" onclick="scrollToSection('articles')"
+                            class="hover:text-terracotta-500 transition">Статьи</a>
+                    </nav>
+
+                    <!-- Dark Mode Toggle -->
+                    <button onclick="toggleDarkMode()"
+                        class="p-2.5 rounded-full hover:bg-slate-200 dark:hover:bg-navy-800 text-slate-600 dark:text-slate-300 transition"
+                        title="Сменить тему">
+                        <i id="theme-icon" class="fa-solid fa-moon text-lg"></i>
+                    </button>
+
+                    <!-- Favorites Icon -->
+                    <button onclick="toggleFavoritesDrawer()"
+                        class="p-2.5 rounded-full hover:bg-slate-200 dark:hover:bg-navy-800 text-slate-600 dark:text-slate-300 relative transition"
+                        title="Избранное">
+                        <i class="fa-solid fa-heart text-lg"></i>
+                        <span id="fav-badge"
+                            class="hidden absolute -top-1 -right-1 bg-terracotta-500 text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center">0</span>
+                    </button>
+
+                    <!-- Cart Icon -->
+                    <button onclick="toggleCartDrawer()"
+                        class="p-2.5 rounded-full bg-terracotta-500 text-white hover:bg-terracotta-600 relative transition shadow-md"
+                        title="Корзина">
+                        <i class="fa-solid fa-cart-shopping text-lg"></i>
+                        <span id="cart-badge"
+                            class="hidden absolute -top-1.5 -right-1.5 bg-amberGold-500 text-navy-900 text-[11px] font-bold w-5 h-5 rounded-full flex items-center justify-center border-2 border-white dark:border-navy-900">0</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Mobile Search Bar -->
+            <div class="md:hidden pb-4">
+                <div class="relative">
+                    <input type="text" id="global-search-mobile" oninput="handleSearch(this.value)"
+                        placeholder="Поиск книг, авторов..."
+                        class="w-full pl-10 pr-4 py-2 rounded-full border border-slate-300 dark:border-slate-700 bg-white dark:bg-navy-800 text-sm focus:outline-none focus:ring-2 focus:ring-terracotta-500 dark:text-slate-100 placeholder-slate-400">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-2.5 text-slate-400"></i>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow">
+        <!-- HERO BANNER SECTION -->
+        <section
+            class="relative bg-gradient-to-r from-cream-200 via-cream-100 to-amberGold-400/20 dark:from-navy-900 dark:via-navy-800 dark:to-navy-950 py-12 md:py-20 overflow-hidden">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                <div class="grid md:grid-cols-2 gap-8 items-center">
+                    <div class="space-y-6 text-center md:text-left">
+                        <span
+                            class="inline-block px-3.5 py-1.5 rounded-full bg-terracotta-500/10 text-terracotta-500 dark:bg-amberGold-500/20 dark:text-amberGold-400 text-xs font-semibold uppercase tracking-wider">
+                            <i class="fa-solid fa-star mr-1"></i> Выбор месяца
+                        </span>
+                        <h1
+                            class="font-serif text-3xl sm:text-4xl md:text-5xl font-bold leading-tight text-navy-900 dark:text-white">
+                            Откройте для себя новые миры на каждой странице
+                        </h1>
+                        <p class="text-slate-600 dark:text-slate-300 text-base sm:text-lg max-w-xl">
+                            Тысячи захватывающих историй, редких классических изданий и актуальных нон-фикшн
+                            бестселлеров с быстрой доставкой прямо к вашей двери.
+                        </p>
+                        <div class="flex flex-wrap gap-4 justify-center md:justify-start">
+                            <a href="#catalog"
+                                class="px-6 py-3.5 rounded-xl bg-terracotta-500 hover:bg-terracotta-600 text-white font-medium shadow-lg hover:shadow-xl transition transform hover:-translate-y-0.5 flex items-center gap-2">
+                                <i class="fa-solid fa-compass"></i> Перейти в каталог
+                            </a>
+                            <button onclick="scrollToSection('quiz')"
+                                class="px-6 py-3.5 rounded-xl border border-slate-300 dark:border-slate-700 hover:bg-white/50 dark:hover:bg-navy-800 font-medium transition flex items-center gap-2">
+                                <i class="fa-solid fa-wand-magic-sparkles text-amberGold-500"></i> Подбрать книгу
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Featured Book Showcase Card -->
+                    <div class="flex justify-center">
+                        <div
+                            class="bg-white dark:bg-navy-800 p-6 rounded-2xl shadow-2xl border border-cream-200 dark:border-slate-700/50 max-w-sm transform rotate-1 hover:rotate-0 transition duration-300">
+                            <div
+                                class="relative mb-4 overflow-hidden rounded-xl bg-cream-100 dark:bg-navy-900 flex justify-center py-4">
+                                <img id="hero-book-img"
+                                    src="https://images.unsplash.com/photo-1544947950-fa07a98d237f?auto=format&fit=crop&q=80&w=400"
+                                    alt="Книга месяца" class="h-64 object-cover rounded-md shadow-md">
+                                <span
+                                    class="absolute top-2 right-2 bg-amberGold-500 text-navy-900 font-bold text-xs px-2.5 py-1 rounded-full shadow">
+                                    -20% Скидка
+                                </span>
+                            </div>
+                            <div class="space-y-2">
+                                <div class="text-xs text-terracotta-500 font-semibold uppercase">Книга Месяца</div>
+                                <h3 class="font-serif text-xl font-bold line-clamp-1">Мастер и Маргарита</h3>
+                                <p class="text-sm text-slate-500 dark:text-slate-400">Михаил Булгаков</p>
+                                <div
+                                    class="flex items-center justify-between pt-3 border-t border-slate-100 dark:border-slate-700">
+                                    <div>
+                                        <span class="text-xl font-bold text-terracotta-500">640 ₽</span>
+                                        <span class="text-sm text-slate-400 line-through ml-2">800 ₽</span>
+                                    </div>
+                                    <button onclick="openBookModal(1)"
+                                        class="px-4 py-2 rounded-lg bg-navy-800 text-white dark:bg-cream-100 dark:text-navy-900 text-sm font-medium hover:opacity-90 transition">
+                                        Подробнее
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- MAIN CATALOG SECTION -->
+        <section id="catalog" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div class="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
+                <div>
+                    <h2 class="font-serif text-2xl sm:text-3xl font-bold text-navy-900 dark:text-white">Каталог Книг
+                    </h2>
+                    <p class="text-slate-500 dark:text-slate-400 text-sm mt-1">Найдите своё следующее увлекательное
+                        чтение</p>
+                </div>
+
+                <!-- Sorting Dropdown -->
+                <div class="flex items-center gap-3">
+                    <label for="sort-select"
+                        class="text-sm text-slate-600 dark:text-slate-400 whitespace-nowrap">Сортировка:</label>
+                    <select id="sort-select" onchange="applyFilters()"
+                        class="bg-white dark:bg-navy-800 border border-slate-300 dark:border-slate-700 text-sm rounded-xl px-3 py-2 focus:ring-2 focus:ring-terracotta-500 focus:outline-none">
+                        <option value="popular">По популярности</option>
+                        <option value="price-asc">По цене: сначала дешевле</option>
+                        <option value="price-desc">По цене: сначала дороже</option>
+                        <option value="rating">По рейтингу</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Filters & Catalog Grid Layout -->
+            <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+
+                <!-- FILTER SIDEBAR -->
+                <aside
+                    class="space-y-6 bg-white dark:bg-navy-800 p-6 rounded-2xl border border-cream-200 dark:border-slate-700/60 h-fit sticky top-24">
+                    <div class="flex items-center justify-between pb-4 border-b border-slate-200 dark:border-slate-700">
+                        <h3 class="font-bold text-lg flex items-center gap-2">
+                            <i class="fa-solid fa-sliders text-terracotta-500"></i> Фильтры
+                        </h3>
+                        <button onclick="resetFilters()"
+                            class="text-xs text-terracotta-500 hover:underline">Сбросить</button>
+                    </div>
+
+                    <!-- Genre Filter -->
+                    <div>
+                        <label class="block text-sm font-semibold mb-2">Жанр</label>
+                        <div id="genre-filters" class="space-y-2 max-h-48 overflow-y-auto pr-1">
+                            <!-- Populated via JS -->
+                        </div>
+                    </div>
+
+                    <!-- Price Filter -->
+                    <div>
+                        <div class="flex justify-between items-center mb-2">
+                            <label class="text-sm font-semibold">Макс. Цена</label>
+                            <span id="price-value" class="text-sm font-bold text-terracotta-500">2000 ₽</span>
+                        </div>
+                        <input type="range" id="price-range" min="300" max="2000" step="50" value="2000"
+                            oninput="updatePriceLabel(this.value); applyFilters()" class="w-full accent-terracotta-500">
+                    </div>
+
+                    <!-- Format Filter -->
+                    <div>
+                        <label class="block text-sm font-semibold mb-2">Формат</label>
+                        <div id="format-filters" class="space-y-2">
+                            <!-- Populated via JS -->
+                        </div>
+                    </div>
+
+                    <!-- Rating Filter -->
+                    <div>
+                        <label class="block text-sm font-semibold mb-2">Минимальный рейтинг</label>
+                        <select id="rating-filter" onchange="applyFilters()"
+                            class="w-full bg-cream-50 dark:bg-navy-900 border border-slate-300 dark:border-slate-700 text-sm rounded-xl p-2.5">
+                            <option value="0">Любой рейтинг</option>
+                            <option value="4.5">★ 4.5 и выше</option>
+                            <option value="4.0">★ 4.0 и выше</option>
+                            <option value="3.5">★ 3.5 и выше</option>
+                        </select>
+                    </div>
+                </aside>
+
+                <!-- BOOKS GRID -->
+                <div class="lg:col-span-3">
+                    <div id="books-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                        <!-- Book cards injected here dynamically -->
+                    </div>
+
+                    <!-- Empty State -->
+                    <div id="no-results"
+                        class="hidden text-center py-16 bg-white dark:bg-navy-800 rounded-2xl border border-dashed border-slate-300 dark:border-slate-700">
+                        <i class="fa-solid fa-book-open-reader text-5xl text-slate-300 dark:text-slate-600 mb-4"></i>
+                        <h3 class="text-lg font-bold">Книги не найдены</h3>
+                        <p class="text-slate-500 text-sm mt-1">Попробуйте изменить параметры поиска или сбросить
+                            фильтры.</p>
+                        <button onclick="resetFilters()"
+                            class="mt-4 px-4 py-2 bg-terracotta-500 text-white text-sm rounded-xl">Сбросить
+                            фильтры</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- BESTSELLERS SECTION -->
+        <section id="bestsellers"
+            class="bg-cream-100 dark:bg-navy-900 py-16 border-y border-cream-200 dark:border-slate-800 transition-colors">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex items-center justify-between mb-8">
+                    <div>
+                        <span class="text-xs font-bold text-terracotta-500 uppercase tracking-widest">Хиты продаж</span>
+                        <h2 class="font-serif text-2xl sm:text-3xl font-bold text-navy-900 dark:text-white mt-1">
+                            Бестселлеры недели</h2>
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="scrollBestsellers(-1)"
+                            class="w-10 h-10 rounded-full bg-white dark:bg-navy-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center hover:bg-terracotta-500 hover:text-white transition">
+                            <i class="fa-solid fa-chevron-left"></i>
+                        </button>
+                        <button onclick="scrollBestsellers(1)"
+                            class="w-10 h-10 rounded-full bg-white dark:bg-navy-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center hover:bg-terracotta-500 hover:text-white transition">
+                            <i class="fa-solid fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Horizontal Scrollable Container -->
+                <div id="bestsellers-container" class="flex gap-6 overflow-x-auto scroll-smooth pb-4 no-scrollbar">
+                    <!-- Populated dynamically via JS -->
+                </div>
+            </div>
+        </section>
+
+        <!-- INTERACTIVE BOOK RECOMMENDER QUIZ -->
+        <section id="quiz" class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+            <div
+                class="bg-gradient-to-br from-navy-900 to-navy-800 text-white rounded-3xl p-8 sm:p-12 shadow-2xl relative overflow-hidden">
+                <div class="absolute -right-10 -bottom-10 opacity-10 text-9xl">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i>
+                </div>
+
+                <div id="quiz-step-intro" class="text-center space-y-6">
+                    <span
+                        class="px-4 py-1.5 rounded-full bg-amberGold-500/20 text-amberGold-400 text-xs font-semibold uppercase tracking-wider">Интерактивный
+                        помощник</span>
+                    <h2 class="font-serif text-3xl sm:text-4xl font-bold">Не знаете, что почитать?</h2>
+                    <p class="text-slate-300 max-w-xl mx-auto text-sm sm:text-base">Ответьте на 3 простых вопроса, и наш
+                        алгоритм подберет идеально подходящую для вас книгу!</p>
+                    <button onclick="startQuiz()"
+                        class="px-8 py-3.5 rounded-xl bg-terracotta-500 hover:bg-terracotta-600 font-semibold shadow-lg transition">
+                        Начать тест
+                    </button>
+                </div>
+
+                <!-- Quiz Questions -->
+                <div id="quiz-content" class="hidden max-w-xl mx-auto">
+                    <div class="flex justify-between text-xs text-slate-400 mb-4">
+                        <span id="quiz-progress-text">Вопрос 1 из 3</span>
+                        <span id="quiz-step-indicator">33%</span>
+                    </div>
+                    <div class="w-full bg-navy-950 h-2 rounded-full mb-8 overflow-hidden">
+                        <div id="quiz-bar" class="bg-terracotta-500 h-full w-1/3 transition-all duration-300"></div>
+                    </div>
+
+                    <h3 id="quiz-question" class="font-serif text-xl sm:text-2xl font-bold mb-6 text-center"></h3>
+
+                    <div id="quiz-options" class="grid gap-3">
+                        <!-- Options injected dynamically -->
+                    </div>
+                </div>
+
+                <!-- Quiz Result -->
+                <div id="quiz-result" class="hidden text-center space-y-6">
+                    <h3 class="font-serif text-2xl font-bold text-amberGold-400">Мы нашли вашу идеальную книгу!</h3>
+                    <div id="quiz-recommended-book"
+                        class="flex flex-col sm:flex-row items-center gap-6 bg-navy-950/60 p-6 rounded-2xl border border-slate-700/50 text-left">
+                        <!-- Book recommended injected here -->
+                    </div>
+                    <button onclick="resetQuiz()"
+                        class="px-6 py-2.5 rounded-xl border border-slate-600 hover:bg-slate-800 text-sm transition">
+                        Пройти тест заново
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ARTICLES / BLOG SECTION -->
+        <section id="articles" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div class="text-center max-w-2xl mx-auto mb-12">
+                <span class="text-xs font-bold text-terracotta-500 uppercase tracking-widest">Блог Гавани</span>
+                <h2 class="font-serif text-3xl font-bold text-navy-900 dark:text-white mt-1">Читательские статьи &
+                    Советы</h2>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                <article
+                    class="bg-white dark:bg-navy-800 rounded-2xl overflow-hidden border border-cream-200 dark:border-slate-700/60 shadow-sm hover:shadow-md transition">
+                    <img src="https://images.unsplash.com/photo-1506880018603-83d5b814b5a6?auto=format&fit=crop&q=80&w=600"
+                        alt="Статья" class="h-48 w-full object-cover">
+                    <div class="p-6 space-y-3">
+                        <span class="text-xs text-terracotta-500 font-semibold uppercase">Подборка</span>
+                        <h3 class="font-serif text-lg font-bold leading-snug">Что почитать этой осенью: 5 уютных романов
+                        </h3>
+                        <p class="text-sm text-slate-500 dark:text-slate-400 line-clamp-2">Согревающие истории для
+                            вечернего чтения с чашкой горячего чая...</p>
+                        <a href="javascript:void(0)" onclick="showToast('Статья доступна для чтения!')"
+                            class="inline-block text-sm font-semibold text-terracotta-500 hover:underline">Читать далее
+                            →</a>
+                    </div>
+                </article>
+
+                <article
+                    class="bg-white dark:bg-navy-800 rounded-2xl overflow-hidden border border-cream-200 dark:border-slate-700/60 shadow-sm hover:shadow-md transition">
+                    <img src="https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&q=80&w=600"
+                        alt="Статья" class="h-48 w-full object-cover">
+                    <div class="p-6 space-y-3">
+                        <span class="text-xs text-terracotta-500 font-semibold uppercase">Саморазвитие</span>
+                        <h3 class="font-serif text-lg font-bold leading-snug">Топ-5 книг по психологии и продуктивности
+                        </h3>
+                        <p class="text-sm text-slate-500 dark:text-slate-400 line-clamp-2">Как изменить свои привычки и
+                            повысить фокус внимания в современном мире.</p>
+                        <a href="javascript:void(0)" onclick="showToast('Статья доступна для чтения!')"
+                            class="inline-block text-sm font-semibold text-terracotta-500 hover:underline">Читать далее
+                            →</a>
+                    </div>
+                </article>
+
+                <article
+                    class="bg-white dark:bg-navy-800 rounded-2xl overflow-hidden border border-cream-200 dark:border-slate-700/60 shadow-sm hover:shadow-md transition">
+                    <img src="https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?auto=format&fit=crop&q=80&w=600"
+                        alt="Статья" class="h-48 w-full object-cover">
+                    <div class="p-6 space-y-3">
+                        <span class="text-xs text-terracotta-500 font-semibold uppercase">Классика</span>
+                        <h3 class="font-serif text-lg font-bold leading-snug">Почему классическая литература актуальна
+                            всегда?</h3>
+                        <p class="text-sm text-slate-500 dark:text-slate-400 line-clamp-2">Разбор вечных тем и смыслов в
+                            произведениях великих авторов прошлых веков.</p>
+                        <a href="javascript:void(0)" onclick="showToast('Статья доступна для чтения!')"
+                            class="inline-block text-sm font-semibold text-terracotta-500 hover:underline">Читать далее
+                            →</a>
+                    </div>
+                </article>
+            </div>
+        </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-navy-900 text-slate-300 pt-16 pb-8 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
+                <!-- Brand Info -->
+                <div class="space-y-4">
+                    <div class="flex items-center gap-3">
+                        <div
+                            class="w-8 h-8 rounded-lg bg-terracotta-500 text-white flex items-center justify-center text-lg">
+                            <i class="fa-solid fa-book-open"></i>
+                        </div>
+                        <span class="font-serif text-xl font-bold text-white">Книжная Гавань</span>
+                    </div>
+                    <p class="text-sm text-slate-400">Ваш надежный проводник в мир книг. Качественные издания, бережная
+                        упаковка и быстрая доставка.</p>
+                    <div class="flex gap-3 text-slate-400">
+                        <a href="#"
+                            class="w-9 h-9 rounded-full bg-navy-800 flex items-center justify-center hover:bg-terracotta-500 hover:text-white transition"><i
+                                class="fa-brands fa-vk"></i></a>
+                        <a href="#"
+                            class="w-9 h-9 rounded-full bg-navy-800 flex items-center justify-center hover:bg-terracotta-500 hover:text-white transition"><i
+                                class="fa-brands fa-telegram"></i></a>
+                        <a href="#"
+                            class="w-9 h-9 rounded-full bg-navy-800 flex items-center justify-center hover:bg-terracotta-500 hover:text-white transition"><i
+                                class="fa-brands fa-youtube"></i></a>
+                    </div>
+                </div>
+
+                <!-- Navigation -->
+                <div>
+                    <h4 class="text-white font-semibold mb-4">Навигация</h4>
+                    <ul class="space-y-2 text-sm text-slate-400">
+                        <li><a href="#catalog" onclick="showSection('catalog')"
+                                class="hover:text-amberGold-400 transition">Каталог книг</a></li>
+                        <li><a href="#bestsellers" onclick="scrollToSection('bestsellers')"
+                                class="hover:text-amberGold-400 transition">Бестселлеры</a></li>
+                        <li><a href="#quiz" onclick="scrollToSection('quiz')"
+                                class="hover:text-amberGold-400 transition">Подборки</a></li>
+                        <li><a href="#articles" onclick="scrollToSection('articles')"
+                                class="hover:text-amberGold-400 transition">Блог</a></li>
+                    </ul>
+                </div>
+
+                <!-- Customer Care -->
+                <div>
+                    <h4 class="text-white font-semibold mb-4">Покупателям</h4>
+                    <ul class="space-y-2 text-sm text-slate-400">
+                        <li><a href="javascript:void(0)" onclick="showToast('Доставка от 1 до 3 дней!')"
+                                class="hover:text-amberGold-400 transition">Доставка и оплата</a></li>
+                        <li><a href="javascript:void(0)" onclick="showToast('Гарантия возврата 14 дней')"
+                                class="hover:text-amberGold-400 transition">Возврат товара</a></li>
+                        <li><a href="javascript:void(0)" onclick="showToast('Служба поддержки: support@bookhaven.ru')"
+                                class="hover:text-amberGold-400 transition">Контакты</a></li>
+                        <li><a href="javascript:void(0)" onclick="showToast('Часто задаваемые вопросы')"
+                                class="hover:text-amberGold-400 transition">FAQ</a></li>
+                    </ul>
+                </div>
+
+                <!-- Newsletter Subscription -->
+                <div>
+                    <h4 class="text-white font-semibold mb-4">Рассылка и скидки</h4>
+                    <p class="text-xs text-slate-400 mb-3">Подпишитесь и получите секретный промокод на скидку 15%!</p>
+                    <form onsubmit="handleNewsletterSubmit(event)" class="space-y-2">
+                        <input type="email" required placeholder="Ваш Email..."
+                            class="w-full px-3.5 py-2 rounded-xl bg-navy-800 border border-slate-700 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-terracotta-500">
+                        <button type="submit"
+                            class="w-full py-2 bg-terracotta-500 hover:bg-terracotta-600 text-white rounded-xl text-sm font-medium transition">Подписаться</button>
+                    </form>
+                </div>
+            </div>
+
+            <div
+                class="pt-8 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-4">
+                <p>© 2026 Книжная Гавань. Все права защищены.</p>
+                <div class="flex gap-4 text-lg text-slate-400">
+                    <i class="fa-brands fa-cc-visa" title="Visa"></i>
+                    <i class="fa-brands fa-cc-mastercard" title="MasterCard"></i>
+                    <i class="fa-solid fa-credit-card" title="МИР"></i>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- BOOK DETAILS MODAL -->
+    <div id="book-modal"
+        class="fixed inset-0 z-50 hidden bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+        <div
+            class="bg-white dark:bg-navy-900 rounded-3xl max-w-3xl w-full p-6 sm:p-8 relative shadow-2xl border border-cream-200 dark:border-slate-800 my-8">
+            <button onclick="closeBookModal()"
+                class="absolute top-4 right-4 w-9 h-9 rounded-full bg-cream-100 dark:bg-navy-800 flex items-center justify-center text-slate-500 hover:text-slate-800 dark:hover:text-white transition">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+
+            <div id="modal-content" class="grid sm:grid-cols-2 gap-8">
+                <!-- Dynamically filled -->
+            </div>
+        </div>
+    </div>
+
+    <!-- CART SLIDE-OUT DRAWER -->
+    <div id="cart-drawer" class="fixed inset-0 z-50 hidden">
+        <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" onclick="toggleCartDrawer()"></div>
+        <div
+            class="absolute right-0 top-0 bottom-0 max-w-md w-full bg-white dark:bg-navy-900 shadow-2xl flex flex-col border-l border-cream-200 dark:border-slate-800">
+            <!-- Drawer Header -->
+            <div class="p-5 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-cart-shopping text-terracotta-500"></i>
+                    <h3 class="font-serif font-bold text-lg">Ваша Корзина</h3>
+                </div>
+                <button onclick="toggleCartDrawer()"
+                    class="text-slate-400 hover:text-slate-600 dark:hover:text-white"><i
+                        class="fa-solid fa-xmark text-xl"></i></button>
+            </div>
+
+            <!-- Free Shipping Progress -->
+            <div class="bg-cream-100 dark:bg-navy-800 p-4 border-b border-slate-200 dark:border-slate-800">
+                <div class="flex justify-between text-xs mb-1.5 font-medium">
+                    <span id="shipping-status">До бесплатной доставки: 2 000 ₽</span>
+                    <span id="shipping-percent">0%</span>
+                </div>
+                <div class="w-full bg-slate-200 dark:bg-navy-950 h-2 rounded-full overflow-hidden">
+                    <div id="shipping-bar" class="bg-amberGold-500 h-full w-0 transition-all duration-300"></div>
+                </div>
+            </div>
+
+            <!-- Cart Items List -->
+            <div id="cart-items-list" class="flex-grow overflow-y-auto p-5 space-y-4">
+                <!-- Dynamically populated -->
+            </div>
+
+            <!-- Cart Footer Summary -->
+            <div class="p-5 border-t border-slate-200 dark:border-slate-800 bg-cream-50 dark:bg-navy-950 space-y-4">
+                <!-- Promo Code -->
+                <div class="flex gap-2">
+                    <input type="text" id="promo-input" placeholder="Промокод (напр. READ20)"
+                        class="flex-grow px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-navy-800 text-sm focus:outline-none focus:ring-2 focus:ring-terracotta-500">
+                    <button onclick="applyPromoCode()"
+                        class="px-4 py-2 bg-navy-800 text-white dark:bg-slate-700 text-sm font-medium rounded-xl hover:bg-navy-900 transition">Применить</button>
+                </div>
+
+                <div class="space-y-1.5 text-sm">
+                    <div class="flex justify-between text-slate-500">
+                        <span>Сумма товаров:</span>
+                        <span id="cart-subtotal">0 ₽</span>
+                    </div>
+                    <div class="flex justify-between text-slate-500">
+                        <span>Скидка:</span>
+                        <span id="cart-discount" class="text-terracotta-500">-0 ₽</span>
+                    </div>
+                    <div
+                        class="flex justify-between font-bold text-lg text-navy-900 dark:text-white pt-2 border-t border-slate-200 dark:border-slate-800">
+                        <span>Итого:</span>
+                        <span id="cart-total">0 ₽</span>
+                    </div>
+                </div>
+
+                <button onclick="openCheckoutModal()" id="checkout-btn"
+                    class="w-full py-3.5 bg-terracotta-500 hover:bg-terracotta-600 text-white font-semibold rounded-xl shadow-lg transition">
+                    Оформить заказ
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- FAVORITES DRAWER -->
+    <div id="fav-drawer" class="fixed inset-0 z-50 hidden">
+        <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" onclick="toggleFavoritesDrawer()"></div>
+        <div
+            class="absolute right-0 top-0 bottom-0 max-w-md w-full bg-white dark:bg-navy-900 shadow-2xl flex flex-col border-l border-cream-200 dark:border-slate-800">
+            <div class="p-5 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-heart text-terracotta-500"></i>
+                    <h3 class="font-serif font-bold text-lg">Избранные книги</h3>
+                </div>
+                <button onclick="toggleFavoritesDrawer()"
+                    class="text-slate-400 hover:text-slate-600 dark:hover:text-white"><i
+                        class="fa-solid fa-xmark text-xl"></i></button>
+            </div>
+
+            <div id="fav-items-list" class="flex-grow overflow-y-auto p-5 space-y-4">
+                <!-- Dynamically populated -->
+            </div>
+        </div>
+    </div>
+
+    <!-- CHECKOUT MODAL -->
+    <div id="checkout-modal"
+        class="fixed inset-0 z-50 hidden bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+        <div
+            class="bg-white dark:bg-navy-900 rounded-3xl max-w-lg w-full p-6 sm:p-8 relative shadow-2xl border border-cream-200 dark:border-slate-800 my-8">
+            <button onclick="closeCheckoutModal()"
+                class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 dark:hover:text-white">
+                <i class="fa-solid fa-xmark text-xl"></i>
+            </button>
+
+            <h3 class="font-serif text-2xl font-bold mb-6">Оформление заказа</h3>
+
+            <form onsubmit="handleCheckoutSubmit(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold uppercase text-slate-500 mb-1">Имя и Фамилия</label>
+                    <input type="text" required placeholder="Иван Иванов"
+                        class="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-cream-50 dark:bg-navy-800 text-sm focus:outline-none focus:ring-2 focus:ring-terracotta-500">
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold uppercase text-slate-500 mb-1">Телефон</label>
+                        <input type="tel" required placeholder="+7 (999) 000-00-00"
+                            class="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-cream-50 dark:bg-navy-800 text-sm focus:outline-none focus:ring-2 focus:ring-terracotta-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold uppercase text-slate-500 mb-1">Email</label>
+                        <input type="email" required placeholder="example@mail.ru"
+                            class="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-cream-50 dark:bg-navy-800 text-sm focus:outline-none focus:ring-2 focus:ring-terracotta-500">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold uppercase text-slate-500 mb-1">Адрес доставки</label>
+                    <input type="text" required placeholder="г. Москва, ул. Пушкина, д. 10, кв. 5"
+                        class="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-cream-50 dark:bg-navy-800 text-sm focus:outline-none focus:ring-2 focus:ring-terracotta-500">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold uppercase text-slate-500 mb-1">Способ оплаты</label>
+                    <select
+                        class="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-cream-50 dark:bg-navy-800 text-sm focus:outline-none focus:ring-2 focus:ring-terracotta-500">
+                        <option>Банковской картой онлайн</option>
+                        <option>Система быстрых платежей (СБП)</option>
+                        <option>При получении</option>
+                    </select>
+                </div>
+
+                <div class="pt-4 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between">
+                    <div>
+                        <span class="text-xs text-slate-400 block">К оплате:</span>
+                        <span id="checkout-total-price" class="text-2xl font-bold text-terracotta-500">0 ₽</span>
+                    </div>
+                    <button type="submit"
+                        class="px-6 py-3 bg-terracotta-500 hover:bg-terracotta-600 text-white font-semibold rounded-xl shadow-md transition">
+                        Подтвердить заказ
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ORDER SUCCESS CONFIRMATION MODAL -->
+    <div id="success-modal"
+        class="fixed inset-0 z-50 hidden bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div
+            class="bg-white dark:bg-navy-900 rounded-3xl max-w-md w-full p-8 text-center relative shadow-2xl border border-cream-200 dark:border-slate-800">
+            <div
+                class="w-16 h-16 bg-green-100 text-green-500 rounded-full flex items-center justify-center text-3xl mx-auto mb-4">
+                <i class="fa-solid fa-check"></i>
+            </div>
+            <h3 class="font-serif text-2xl font-bold mb-2">Заказ успешно оформлен!</h3>
+            <p class="text-sm text-slate-500 dark:text-slate-400 mb-6">
+                Спасибо за покупку в «Книжной Гавани»! Мы отправляем детали заказа на вашу электронную почту.Номер
+                заказа: <strong id="order-id-num" class="text-terracotta-500">#84920</strong>
+            </p>
+            <button onclick="closeSuccessModal()"
+                class="w-full py-3 bg-navy-800 text-white dark:bg-cream-100 dark:text-navy-900 font-semibold rounded-xl hover:opacity-90 transition">
+                Продолжить покупки
+            </button>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT APPLICATION LOGIC -->
+    <script>
+        // MOCK DATASET (12 Books across various genres)
+        const books = [
+            {
+                id: 1,
+                title: "Мастер и Маргарита",
+                author: "Михаил Булгаков",
+                genre: "Классика",
+                price: 640,
+                oldPrice: 800,
+                rating: 4.9,
+                format: "Твердый переплет",
+                image: "https://images.unsplash.com/photo-1544947950-fa07a98d237f?auto=format&fit=crop&q=80&w=400",
+                bestseller: true,
+                pages: 480,
+                isbn: "978-5-17-118368-4",
+                publisher: "АСТ",
+                description: "Величайший роман XX века, сочетающий в себе философию, сатиру, мистику и глубочайшую любовную линию.",
+                reviews: [
+                    { name: "Анна К.", rating: 5, text: "Перечитываю уже в третий раз, книга на все времена!" },
+                    { name: "Игорь В.", rating: 5, text: "Великолепное оформление и качество печати." }
+                ]
+            },
+            {
+                id: 2,
+                title: "Атомные привычки",
+                author: "Джеймс Клир",
+                genre: "Психология",
+                price: 890,
+                oldPrice: null,
+                rating: 4.8,
+                format: "Мягкая обложка",
+                image: "https://images.unsplash.com/photo-1589829085413-56de8ae18c73?auto=format&fit=crop&q=80&w=400",
+                bestseller: true,
+                pages: 304,
+                isbn: "978-5-00139-183-8",
+                publisher: "Альпина Паблишер",
+                description: "Простой и проверенный способ сформировать хорошие привычки и избавиться от плохих.",
+                reviews: [
+                    { name: "Елена П.", rating: 5, text: "Книга действительно меняет подход к ежедневным рутинам." }
+                ]
+            },
+            {
+                id: 3,
+                title: "Дюна",
+                author: "Фрэнк Герберт",
+                genre: "Фантастика и фэнтези",
+                price: 1150,
+                oldPrice: 1300,
+                rating: 4.9,
+                format: "Твердый переплет",
+                image: "https://images.unsplash.com/photo-1532012197267-da84d127e765?auto=format&fit=crop&q=80&w=400",
+                bestseller: true,
+                pages: 704,
+                isbn: "978-5-17-098822-8",
+                publisher: "АСТ",
+                description: "Монументальная эпическая фантастика о песчаной планете Арракис, интригах и борьбе за спайс.",
+                reviews: [
+                    { name: "Максим Г.", rating: 5, text: "Шедевр мировой фантастики." }
+                ]
+            },
+            {
+                id: 4,
+                title: "Sapiens: Краткая история человечества",
+                author: "Юваль Ной Харари",
+                genre: "Нон-фикшн",
+                price: 990,
+                oldPrice: null,
+                rating: 4.7,
+                format: "Электронная книга",
+                image: "https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&q=80&w=400",
+                bestseller: false,
+                pages: 520,
+                isbn: "978-5-906837-13-4",
+                publisher: "Синдбад",
+                description: "Увлекательный взгляд на историю развития вида Homo Sapiens от каменного века до наших дней.",
+                reviews: []
+            },
+            {
+                id: 5,
+                title: "Убийство в Восточном экспрессе",
+                author: "Агата Кристи",
+                genre: "Детективы",
+                price: 450,
+                oldPrice: 550,
+                rating: 4.6,
+                format: "Мягкая обложка",
+                image: "https://images.unsplash.com/photo-1543002588-bfa74002ed7e?auto=format&fit=crop&q=80&w=400",
+                bestseller: true,
+                pages: 256,
+                isbn: "978-5-17-112233-1",
+                publisher: "Эксмо",
+                description: "Знаменитый детектив Эркюль Пуаро расследует загадочное убийство на борту роскошного поезда.",
+                reviews: [
+                    { name: "Ольга С.", rating: 4, text: "Классический закрученный сюжет." }
+                ]
+            },
+            {
+                id: 6,
+                title: "Преступление и наказание",
+                author: "Фёдор Достоевский",
+                genre: "Классика",
+                price: 520,
+                oldPrice: null,
+                rating: 4.8,
+                format: "Твердый переплет",
+                image: "https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?auto=format&fit=crop&q=80&w=400",
+                bestseller: false,
+                pages: 672,
+                isbn: "978-5-389-02281-2",
+                publisher: "Азбука",
+                description: "Глубокое психологическое исследование вины, искупления и человеческой морали.",
+                reviews: []
+            },
+            {
+                id: 7,
+                title: "Психология влияния",
+                author: "Роберт Чалдини",
+                genre: "Психология",
+                price: 820,
+                oldPrice: 950,
+                rating: 4.7,
+                format: "Аудиокнига",
+                image: "https://images.unsplash.com/photo-1516979187457-637abb4f9353?auto=format&fit=crop&q=80&w=400",
+                bestseller: false,
+                pages: 380,
+                isbn: "978-5-4461-0982-1",
+                publisher: "Питер",
+                description: "Классический труд по социальной психологии и механизмам убеждения людей.",
+                reviews: []
+            },
+            {
+                id: 8,
+                title: "Цветы для Элджернона",
+                author: "Дэниел Киз",
+                genre: "Художественная литература",
+                price: 580,
+                oldPrice: null,
+                rating: 4.9,
+                format: "Мягкая обложка",
+                image: "https://images.unsplash.com/photo-1541961017774-22349e4a1262?auto=format&fit=crop&q=80&w=400",
+                bestseller: true,
+                pages: 320,
+                isbn: "978-5-04-099432-1",
+                publisher: "Эксмо",
+                description: "Трогательная история об умственно отсталом Чарли, который соглашается на опасный научный эксперимент.",
+                reviews: [
+                    { name: "Дмитрий Н.", rating: 5, text: "Очень трогательная книга, советую всем." }
+                ]
+            },
+            {
+                id: 9,
+                title: "Безмолвный пациент",
+                author: "Алекс Михаэлидес",
+                genre: "Детективы",
+                price: 690,
+                oldPrice: 800,
+                rating: 4.5,
+                format: "Твердый переплет",
+                image: "https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&q=80&w=400",
+                bestseller: false,
+                pages: 352,
+                isbn: "978-5-08-011223-9",
+                publisher: "Эксмо",
+                description: "Жуткий психологический триллер об известной художнице, отказавшейся говорить после убийства мужа.",
+                reviews: []
+            },
+            {
+                id: 10,
+                title: "1984",
+                author: "Джордж Оруэлл",
+                genre: "Фантастика и фэнтези",
+                price: 490,
+                oldPrice: null,
+                rating: 4.8,
+                format: "Мягкая обложка",
+                image: "https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&q=80&w=400",
+                bestseller: true,
+                pages: 320,
+                isbn: "978-5-17-080115-2",
+                publisher: "АСТ",
+                description: "Знаменитая антиутопия о тоталитарном обществе, где за каждым шагом следит Большой Брат.",
+                reviews: []
+            },
+            {
+                id: 11,
+                title: "Думай медленно... решай быстро",
+                author: "Даниэль Канеман",
+                genre: "Психология",
+                price: 1050,
+                oldPrice: 1200,
+                rating: 4.6,
+                format: "Твердый переплет",
+                image: "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&q=80&w=400",
+                bestseller: false,
+                pages: 656,
+                isbn: "978-5-17-085522-3",
+                publisher: "АСТ",
+                description: "Нобелевский лауреат объясняет, как устроено наше мышление и почему мы совершаем ошибки.",
+                reviews: []
+            },
+            {
+                id: 12,
+                title: "Маленький принц",
+                author: "Антуан де Сент-Экзюпери",
+                genre: "Классика",
+                price: 390,
+                oldPrice: null,
+                rating: 5.0,
+                format: "Твердый переплет",
+                image: "https://images.unsplash.com/photo-1544947950-fa07a98d237f?auto=format&fit=crop&q=80&w=400",
+                bestseller: false,
+                pages: 112,
+                isbn: "978-5-04-100221-1",
+                publisher: "Эксмо",
+                description: "Мудрая и трогательная притча о дружбе, любви, верности и ответственности.",
+                reviews: []
+            }
+        ];
+
+        // APP STATE
+        let cart = [];
+        let favorites = [];
+        let activePromo = null;
+        let activeFilters = {
+            search: "",
+            genres: [],
+            maxPrice: 2000,
+            formats: [],
+            minRating: 0,
+            sortBy: "popular"
+        };
+
+        // INITIALIZATION
+        window.addEventListener('DOMContentLoaded', () => {
+            initFilters();
+            renderBooks();
+            renderBestsellers();
+            updateCartBadge();
+            updateFavBadge();
+        });
+
+        // DARK MODE TOGGLE
+        function toggleDarkMode() {
+            document.documentElement.classList.toggle('dark');
+            const icon = document.getElementById('theme-icon');
+            if (document.documentElement.classList.contains('dark')) {
+                icon.className = 'fa-solid fa-sun text-lg text-amberGold-400';
+            } else {
+                icon.className = 'fa-solid fa-moon text-lg';
+            }
+        }
+
+        // FILTER UI SETUP
+        function initFilters() {
+            // Populate Genres
+            const genres = [...new Set(books.map(b => b.genre))];
+            const genreContainer = document.getElementById('genre-filters');
+            genreContainer.innerHTML = genres.map(genre => `
+                <label class="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300 cursor-pointer hover:text-terracotta-500">
+                    <input type="checkbox" value="${genre}" onchange="toggleGenreFilter('${genre}')" class="rounded text-terracotta-500 focus:ring-terracotta-500">
+                    ${genre}
+                </label>
+            `).join('');
+
+            // Populate Formats
+            const formats = [...new Set(books.map(b => b.format))];
+            const formatContainer = document.getElementById('format-filters');
+            formatContainer.innerHTML = formats.map(fmt => `
+                <label class="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300 cursor-pointer hover:text-terracotta-500">
+                    <input type="checkbox" value="${fmt}" onchange="toggleFormatFilter('${fmt}')" class="rounded text-terracotta-500 focus:ring-terracotta-500">
+                    ${fmt}
+                </label>
+            `).join('');
+        }
+
+        function toggleGenreFilter(genre) {
+            const index = activeFilters.genres.indexOf(genre);
+            if (index > -1) activeFilters.genres.splice(index, 1);
+            else activeFilters.genres.push(genre);
+            applyFilters();
+        }
+
+        function toggleFormatFilter(fmt) {
+            const index = activeFilters.formats.indexOf(fmt);
+            if (index > -1) activeFilters.formats.splice(index, 1);
+            else activeFilters.formats.push(fmt);
+            applyFilters();
+        }
+
+        function updatePriceLabel(val) {
+            document.getElementById('price-value').innerText = `${val} ₽`;
+            activeFilters.maxPrice = Number(val);
+        }
+
+        function handleSearch(val) {
+            activeFilters.search = val.trim().toLowerCase();
+            const clearBtn = document.getElementById('clear-search-btn');
+            if (val) clearBtn.classList.remove('hidden');
+            else clearBtn.classList.add('hidden');
+            applyFilters();
+        }
+
+        function clearSearch() {
+            document.getElementById('global-search').value = "";
+            document.getElementById('global-search-mobile').value = "";
+            document.getElementById('clear-search-btn').classList.add('hidden');
+            activeFilters.search = "";
+            applyFilters();
+        }
+
+        function resetFilters() {
+            activeFilters = {
+                search: "",
+                genres: [],
+                maxPrice: 2000,
+                formats: [],
+                minRating: 0,
+                sortBy: "popular"
+            };
+            document.getElementById('price-range').value = 2000;
+            document.getElementById('price-value').innerText = '2000 ₽';
+            document.getElementById('rating-filter').value = 0;
+            document.getElementById('sort-select').value = "popular";
+            document.querySelectorAll('#genre-filters input, #format-filters input').forEach(cb => cb.checked = false);
+            clearSearch();
+        }
+
+        // APPLY FILTERS & SORT
+        function applyFilters() {
+            activeFilters.minRating = Number(document.getElementById('rating-filter').value);
+            activeFilters.sortBy = document.getElementById('sort-select').value;
+
+            let filtered = books.filter(b => {
+                const matchesSearch = !activeFilters.search ||
+                    b.title.toLowerCase().includes(activeFilters.search) ||
+                    b.author.toLowerCase().includes(activeFilters.search) ||
+                    b.genre.toLowerCase().includes(activeFilters.search);
+
+                const matchesGenre = activeFilters.genres.length === 0 || activeFilters.genres.includes(b.genre);
+                const matchesFormat = activeFilters.formats.length === 0 || activeFilters.formats.includes(b.format);
+                const matchesPrice = b.price <= activeFilters.maxPrice;
+                const matchesRating = b.rating >= activeFilters.minRating;
+
+                return matchesSearch && matchesGenre && matchesFormat && matchesPrice && matchesRating;
+            });
+
+            // Sorting Logic
+            if (activeFilters.sortBy === 'price-asc') {
+                filtered.sort((a, b) => a.price - b.price);
+            } else if (activeFilters.sortBy === 'price-desc') {
+                filtered.sort((a, b) => b.price - a.price);
+            } else if (activeFilters.sortBy === 'rating') {
+                filtered.sort((a, b) => b.rating - a.rating);
+            } else {
+                filtered.sort((a, b) => (b.bestseller ? 1 : 0) - (a.bestseller ? 1 : 0));
+            }
+
+            renderBooks(filtered);
+        }
+
+        // RENDER MAIN BOOK GRID
+        function renderBooks(list = books) {
+            const grid = document.getElementById('books-grid');
+            const noResults = document.getElementById('no-results');
+
+            if (list.length === 0) {
+                grid.innerHTML = "";
+                noResults.classList.remove('hidden');
+                return;
+            }
+
+            noResults.classList.add('hidden');
+            grid.innerHTML = list.map(book => {
+                const isFav = favorites.includes(book.id);
+                return `
+                <div class="bg-white dark:bg-navy-800 rounded-2xl p-4 border border-cream-200 dark:border-slate-700/60 shadow-sm hover:shadow-lg transition flex flex-col justify-between group">
+                    <div>
+                        <!-- Image Container -->
+                        <div class="relative mb-3 bg-cream-100 dark:bg-navy-900 rounded-xl overflow-hidden flex justify-center py-4">
+                            <img src="${book.image}" alt="${book.title}" class="h-52 object-cover rounded shadow group-hover:scale-105 transition duration-300">
+                            
+                            <button onclick="toggleFavorite(${book.id})" class="absolute top-2 right-2 w-8 h-8 rounded-full bg-white/80 dark:bg-navy-800/80 backdrop-blur text-slate-400 hover:text-terracotta-500 flex items-center justify-center transition ${isFav ? 'text-terracotta-500' : ''}">
+                                <i class="fa-${isFav ? 'solid' : 'regular'} fa-heart"></i>
+                            </button>
+
+                            ${book.oldPrice ? `<span class="absolute top-2 left-2 bg-terracotta-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">Скидка</span>` : ''}
+                        </div>
+
+                        <!-- Info -->
+                        <span class="text-[11px] font-semibold uppercase text-terracotta-500">${book.genre}</span>
+                        <h3 onclick="openBookModal(${book.id})" class="font-serif font-bold text-base line-clamp-1 hover:text-terracotta-500 cursor-pointer mt-0.5">${book.title}</h3>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 mb-2">${book.author}</p>
+
+                        <div class="flex items-center gap-1 text-amberGold-500 text-xs mb-3">
+                            <i class="fa-solid fa-star"></i>
+                            <span class="font-bold text-slate-700 dark:text-slate-200">${book.rating}</span>
+                            <span class="text-slate-400 text-[10px]">(${book.reviews.length} отз.)</span>
+                        </div>
+                    </div>
+
+                    <!-- Price & Add Button -->
+                    <div class="pt-3 border-t border-slate-100 dark:border-slate-700/60 flex items-center justify-between">
+                        <div>
+                            <span class="font-bold text-lg text-slate-900 dark:text-white">${book.price} ₽</span>
+                            ${book.oldPrice ? `<span class="text-xs text-slate-400 line-through ml-1">${book.oldPrice} ₽</span>` : ''}
+                        </div>
+                        <button onclick="addToCart(${book.id})" class="p-2.5 rounded-xl bg-terracotta-500 text-white hover:bg-terracotta-600 transition shadow" title="В корзину">
+                            <i class="fa-solid fa-cart-plus"></i>
+                        </button>
+                    </div>
+                </div>
+            `}).join('');
+        }
+
+        // RENDER BESTSELLERS CAROUSEL
+        function renderBestsellers() {
+            const container = document.getElementById('bestsellers-container');
+            const bests = books.filter(b => b.bestseller);
+
+            container.innerHTML = bests.map(book => `
+                <div class="min-w-[240px] max-w-[240px] bg-white dark:bg-navy-800 p-4 rounded-2xl border border-cream-200 dark:border-slate-700/60 shadow-sm flex-shrink-0">
+                    <div class="relative mb-3 bg-cream-100 dark:bg-navy-900 rounded-xl py-3 flex justify-center">
+                        <img src="${book.image}" alt="${book.title}" class="h-44 object-cover rounded shadow">
+                    </div>
+                    <h4 onclick="openBookModal(${book.id})" class="font-serif font-bold text-sm line-clamp-1 hover:text-terracotta-500 cursor-pointer">${book.title}</h4>
+                    <p class="text-xs text-slate-500 mb-2">${book.author}</p>
+                    <div class="flex items-center justify-between">
+                        <span class="font-bold text-terracotta-500">${book.price} ₽</span>
+                        <button onclick="addToCart(${book.id})" class="text-xs px-3 py-1.5 rounded-lg bg-navy-800 text-white dark:bg-slate-700 hover:bg-terracotta-500 transition">
+                            + Корзина
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function scrollBestsellers(direction) {
+            const container = document.getElementById('bestsellers-container');
+            container.scrollBy({ left: direction * 260, behavior: 'smooth' });
+        }
+
+        // BOOK DETAILS MODAL LOGIC
+        function openBookModal(id) {
+            const book = books.find(b => b.id === id);
+            if (!book) return;
+
+            const modal = document.getElementById('book-modal');
+            const content = document.getElementById('modal-content');
+
+            content.innerHTML = `
+                <div class="flex justify-center items-center bg-cream-100 dark:bg-navy-950 p-6 rounded-2xl">
+                    <img src="${book.image}" alt="${book.title}" class="h-72 object-cover rounded-lg shadow-lg">
+                </div>
+
+                <div class="space-y-4">
+                    <div>
+                        <span class="text-xs font-semibold uppercase text-terracotta-500">${book.genre} • ${book.format}</span>
+                        <h2 class="font-serif text-2xl font-bold text-navy-900 dark:text-white mt-1">${book.title}</h2>
+                        <p class="text-sm text-slate-500 dark:text-slate-400">Автор: <strong class="text-slate-700 dark:text-slate-200">${book.author}</strong></p>
+                    </div>
+
+                    <div class="flex items-center gap-2 text-amberGold-500 text-sm">
+                        <i class="fa-solid fa-star"></i>
+                        <span class="font-bold text-slate-800 dark:text-white">${book.rating}</span>
+                        <span class="text-slate-400 text-xs">(${book.reviews.length} отзывов)</span>
+                    </div>
+
+                    <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">${book.description}</p>
+
+                    <div class="grid grid-cols-2 gap-2 text-xs text-slate-500 dark:text-slate-400 bg-cream-50 dark:bg-navy-800 p-3 rounded-xl">
+                        <div><strong>Страниц:</strong> ${book.pages}</div>
+                        <div><strong>Издательство:</strong> ${book.publisher}</div>
+                        <div><strong>ISBN:</strong> ${book.isbn}</div>
+                        <div><strong>Наличие:</strong> <span class="text-green-500 font-semibold">В наличии</span></div>
+                    </div>
+
+                    <div class="flex items-center justify-between pt-4 border-t border-slate-200 dark:border-slate-800">
+                        <div>
+                            <span class="text-2xl font-bold text-terracotta-500">${book.price} ₽</span>
+                            ${book.oldPrice ? `<span class="text-sm text-slate-400 line-through ml-2">${book.oldPrice} ₽</span>` : ''}
+                        </div>
+                        <div class="flex gap-2">
+                            <button onclick="toggleFavorite(${book.id})" class="p-3 rounded-xl border border-slate-300 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:text-terracotta-500">
+                                <i class="fa-${favorites.includes(book.id) ? 'solid' : 'regular'} fa-heart"></i>
+                            </button>
+                            <button onclick="addToCart(${book.id}); closeBookModal();" class="px-6 py-3 rounded-xl bg-terracotta-500 hover:bg-terracotta-600 text-white font-semibold transition">
+                                Добавить в корзину
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Reviews Section -->
+                    <div class="pt-4 border-t border-slate-200 dark:border-slate-800">
+                        <h4 class="font-bold text-sm mb-2">Отзывы покупателей</h4>
+                        <div class="space-y-2 max-h-32 overflow-y-auto pr-1">
+                            ${book.reviews.length > 0 ? book.reviews.map(r => `
+                                <div class="bg-cream-100/50 dark:bg-navy-800/50 p-2.5 rounded-lg text-xs">
+                                    <div class="flex justify-between font-bold mb-1">
+                                        <span>${r.name}</span>
+                                        <span class="text-amberGold-500">★ ${r.rating}</span>
+                                    </div>
+                                    <p class="text-slate-600 dark:text-slate-300">${r.text}</p>
+                                </div>
+                            `).join('') : '<p class="text-xs text-slate-400 italic">Пока нет отзывов. Будьте первыми!</p>'}
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            modal.classList.remove('hidden');
+        }
+
+        function closeBookModal() {
+            document.getElementById('book-modal').classList.add('hidden');
+        }
+
+        // CART LOGIC
+        function addToCart(bookId) {
+            const existing = cart.find(item => item.id === bookId);
+            if (existing) {
+                existing.quantity += 1;
+            } else {
+                const book = books.find(b => b.id === bookId);
+                cart.push({ ...book, quantity: 1 });
+            }
+            updateCartBadge();
+            renderCartItems();
+            showToast('Книга добавлена в корзину!');
+        }
+
+        function updateQuantity(bookId, delta) {
+            const item = cart.find(i => i.id === bookId);
+            if (!item) return;
+            item.quantity += delta;
+            if (item.quantity <= 0) {
+                cart = cart.filter(i => i.id !== bookId);
+            }
+            updateCartBadge();
+            renderCartItems();
+        }
+
+        function removeFromCart(bookId) {
+            cart = cart.filter(i => i.id !== bookId);
+            updateCartBadge();
+            renderCartItems();
+            showToast('Товар удален из корзины');
+        }
+
+        function updateCartBadge() {
+            const badge = document.getElementById('cart-badge');
+            const totalItems = cart.reduce((sum, i) => sum + i.quantity, 0);
+            if (totalItems > 0) {
+                badge.innerText = totalItems;
+                badge.classList.remove('hidden');
+            } else {
+                badge.classList.add('hidden');
+            }
+        }
+
+        function renderCartItems() {
+            const list = document.getElementById('cart-items-list');
+            if (cart.length === 0) {
+                list.innerHTML = `
+                    <div class="text-center py-12 text-slate-400">
+                        <i class="fa-solid fa-cart-flatbed text-4xl mb-3"></i>
+                        <p class="text-sm font-medium">Ваша корзина пуста</p>
+                    </div>
+                `;
+            } else {
+                list.innerHTML = cart.map(item => `
+                    <div class="flex items-center gap-4 bg-cream-50 dark:bg-navy-800 p-3 rounded-2xl border border-slate-200 dark:border-slate-700/50">
+                        <img src="${item.image}" alt="${item.title}" class="w-14 h-20 object-cover rounded-lg">
+                        <div class="flex-grow">
+                            <h4 class="font-serif font-bold text-sm line-clamp-1">${item.title}</h4>
+                            <p class="text-xs text-slate-400 mb-2">${item.price} ₽</p>
+                            <div class="flex items-center gap-2">
+                                <button onclick="updateQuantity(${item.id}, -1)" class="w-6 h-6 rounded-md bg-slate-200 dark:bg-navy-900 text-xs flex items-center justify-center font-bold">-</button>
+                                <span class="text-xs font-bold w-4 text-center">${item.quantity}</span>
+                                <button onclick="updateQuantity(${item.id}, 1)" class="w-6 h-6 rounded-md bg-slate-200 dark:bg-navy-900 text-xs flex items-center justify-center font-bold">+</button>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <button onclick="removeFromCart(${item.id})" class="text-slate-400 hover:text-red-500 text-xs mb-2 block"><i class="fa-solid fa-trash"></i></button>
+                            <span class="font-bold text-sm text-terracotta-500">${item.price * item.quantity} ₽</span>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            calculateCartTotals();
+        }
+
+        function calculateCartTotals() {
+            const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            let discount = 0;
+
+            if (activePromo === 'READ20') {
+                discount = Math.round(subtotal * 0.20);
+            }
+
+            const total = Math.max(0, subtotal - discount);
+
+            document.getElementById('cart-subtotal').innerText = `${subtotal} ₽`;
+            document.getElementById('cart-discount').innerText = `-${discount} ₽`;
+            document.getElementById('cart-total').innerText = `${total} ₽`;
+
+            // Free Shipping Progress
+            const target = 2000;
+            const progress = Math.min(100, Math.round((subtotal / target) * 100));
+            document.getElementById('shipping-bar').style.width = `${progress}%`;
+            document.getElementById('shipping-percent').innerText = `${progress}%`;
+
+            if (subtotal >= target) {
+                document.getElementById('shipping-status').innerText = '🎉 Вы получили бесплатную доставку!';
+            } else {
+                document.getElementById('shipping-status').innerText = `До бесплатной доставки: ${target - subtotal} ₽`;
+            }
+        }
+
+        function applyPromoCode() {
+            const code = document.getElementById('promo-input').value.trim().toUpperCase();
+            if (code === 'READ20') {
+                activePromo = 'READ20';
+                showToast('Промокод READ20 активирован (-20%)!');
+                calculateCartTotals();
+            } else {
+                showToast('Недействительный промокод');
+            }
+        }
+
+        function toggleCartDrawer() {
+            const drawer = document.getElementById('cart-drawer');
+            drawer.classList.toggle('hidden');
+            if (!drawer.classList.contains('hidden')) {
+                renderCartItems();
+            }
+        }
+
+        // FAVORITES / WISHLIST LOGIC
+        function toggleFavorite(bookId) {
+            const index = favorites.indexOf(bookId);
+            if (index > -1) {
+                favorites.splice(index, 1);
+                showToast('Книга удалена из избранного');
+            } else {
+                favorites.push(bookId);
+                showToast('Книга добавлена в избранное!');
+            }
+            updateFavBadge();
+            renderBooks();
+            renderFavItems();
+        }
+
+        function updateFavBadge() {
+            const badge = document.getElementById('fav-badge');
+            if (favorites.length > 0) {
+                badge.innerText = favorites.length;
+                badge.classList.remove('hidden');
+            } else {
+                badge.classList.add('hidden');
+            }
+        }
+
+        function toggleFavoritesDrawer() {
+            const drawer = document.getElementById('fav-drawer');
+            drawer.classList.toggle('hidden');
+            if (!drawer.classList.contains('hidden')) {
+                renderFavItems();
+            }
+        }
+
+        function renderFavItems() {
+            const list = document.getElementById('fav-items-list');
+            const favBooks = books.filter(b => favorites.includes(b.id));
+
+            if (favBooks.length === 0) {
+                list.innerHTML = `
+                    <div class="text-center py-12 text-slate-400">
+                        <i class="fa-regular fa-heart text-4xl mb-3"></i>
+                        <p class="text-sm font-medium">Список избранного пуст</p>
+                    </div>
+                `;
+            } else {
+                list.innerHTML = favBooks.map(item => `
+                    <div class="flex items-center gap-4 bg-cream-50 dark:bg-navy-800 p-3 rounded-2xl border border-slate-200 dark:border-slate-700/50">
+                        <img src="${item.image}" alt="${item.title}" class="w-14 h-20 object-cover rounded-lg">
+                        <div class="flex-grow">
+                            <h4 class="font-serif font-bold text-sm line-clamp-1">${item.title}</h4>
+                            <p class="text-xs text-slate-400">${item.author}</p>
+                            <span class="font-bold text-sm text-terracotta-500 block mt-1">${item.price} ₽</span>
+                        </div>
+                        <div class="flex flex-col gap-2">
+                            <button onclick="addToCart(${item.id})" class="p-2 bg-terracotta-500 text-white rounded-lg text-xs" title="В корзину"><i class="fa-solid fa-cart-plus"></i></button>
+                            <button onclick="toggleFavorite(${item.id})" class="p-2 text-slate-400 hover:text-red-500 text-xs" title="Удалить"><i class="fa-solid fa-trash"></i></button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        // CHECKOUT & SUCCESS MODALS
+        function openCheckoutModal() {
+            if (cart.length === 0) {
+                showToast('Ваша корзина пуста!');
+                return;
+            }
+            toggleCartDrawer();
+            const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            const discount = activePromo === 'READ20' ? Math.round(subtotal * 0.20) : 0;
+            document.getElementById('checkout-total-price').innerText = `${subtotal - discount} ₽`;
+            document.getElementById('checkout-modal').classList.remove('hidden');
+        }
+
+        function closeCheckoutModal() {
+            document.getElementById('checkout-modal').classList.add('hidden');
+        }
+
+        function handleCheckoutSubmit(e) {
+            e.preventDefault();
+            closeCheckoutModal();
+
+            // Random Order ID
+            document.getElementById('order-id-num').innerText = '#' + Math.floor(100000 + Math.random() * 900000);
+            document.getElementById('success-modal').classList.remove('hidden');
+
+            // Clear Cart
+            cart = [];
+            activePromo = null;
+            updateCartBadge();
+        }
+
+        function closeSuccessModal() {
+            document.getElementById('success-modal').classList.add('hidden');
+        }
+
+        // INTERACTIVE QUIZ LOGIC
+        const quizQuestions = [
+            {
+                question: "Какое настроение вы ищете в книге?",
+                options: [
+                    { text: "Загадочное и интригующее", genre: "Детективы" },
+                    { text: "Уютное и вдохновляющее", genre: "Классика" },
+                    { text: "Глубокое и познавательное", genre: "Психология" },
+                    { text: "Захватывающее и неземное", genre: "Фантастика и фэнтези" }
+                ]
+            },
+            {
+                question: "Какой формат чтения вам ближе всего?",
+                options: [
+                    { text: "Классическая печатная книга", format: "Твердый переплет" },
+                    { text: "Легкая книга в мягкой обложке", format: "Мягкая обложка" },
+                    { text: "Электронная книга на планшете", format: "Электронная книга" }
+                ]
+            }
+        ];
+
+        let quizStep = 0;
+        let selectedAnswers = [];
+
+        function startQuiz() {
+            quizStep = 0;
+            selectedAnswers = [];
+            document.getElementById('quiz-step-intro').classList.add('hidden');
+            document.getElementById('quiz-content').classList.remove('hidden');
+            renderQuizStep();
+        }
+
+        function renderQuizStep() {
+            const q = quizQuestions[quizStep];
+            document.getElementById('quiz-question').innerText = q.question;
+            document.getElementById('quiz-progress-text').innerText = `Вопрос ${quizStep + 1} из ${quizQuestions.length}`;
+            document.getElementById('quiz-step-indicator').innerText = `${Math.round(((quizStep + 1) / quizQuestions.length) * 100)}%`;
+            document.getElementById('quiz-bar').style.width = `${((quizStep + 1) / quizQuestions.length) * 100}%`;
+
+            const optionsContainer = document.getElementById('quiz-options');
+            optionsContainer.innerHTML = q.options.map((opt, i) => `
+                <button onclick="answerQuiz(${i})" class="w-full p-4 rounded-xl bg-navy-800/80 hover:bg-terracotta-500 text-left border border-slate-700 hover:border-terracotta-500 transition font-medium text-sm">
+                    ${opt.text}
+                </button>
+            `).join('');
+        }
+
+        function answerQuiz(optionIndex) {
+            selectedAnswers.push(quizQuestions[quizStep].options[optionIndex]);
+            quizStep++;
+            if (quizStep < quizQuestions.length) {
+                renderQuizStep();
+            } else {
+                showQuizResult();
+            }
+        }
+
+        function showQuizResult() {
+            document.getElementById('quiz-content').classList.add('hidden');
+            document.getElementById('quiz-result').classList.remove('hidden');
+
+            const preferredGenre = selectedAnswers[0]?.genre;
+            let matchedBook = books.find(b => b.genre === preferredGenre) || books[0];
+
+            document.getElementById('quiz-recommended-book').innerHTML = `
+                <img src="${matchedBook.image}" alt="${matchedBook.title}" class="w-24 h-36 object-cover rounded-lg">
+                <div class="space-y-2">
+                    <span class="text-xs text-amberGold-400 uppercase font-bold">${matchedBook.genre}</span>
+                    <h4 class="font-serif font-bold text-xl">${matchedBook.title}</h4>
+                    <p class="text-sm text-slate-300">${matchedBook.author}</p>
+                    <p class="text-xs text-slate-400 line-clamp-2">${matchedBook.description}</p>
+                    <button onclick="addToCart(${matchedBook.id})" class="px-4 py-2 bg-terracotta-500 text-white text-xs font-semibold rounded-lg mt-2">
+                        Добавить за ${matchedBook.price} ₽
+                    </button>
+                </div>
+            `;
+        }
+
+        function resetQuiz() {
+            document.getElementById('quiz-result').classList.add('hidden');
+            document.getElementById('quiz-step-intro').classList.remove('hidden');
+        }
+
+        // NEWSLETTER SUBMISSION
+        function handleNewsletterSubmit(e) {
+            e.preventDefault();
+            showToast('Спасибо за подписку! Ваш промокод: READ15');
+            e.target.reset();
+        }
+
+        // UTILITY FUNCTIONS
+        function scrollToSection(id) {
+            document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function showSection(id) {
+            scrollToSection(id);
+        }
+
+        function showToast(message) {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = 'bg-navy-900 text-white px-4 py-3 rounded-xl shadow-xl text-sm border border-slate-700 flex items-center gap-3 transform transition duration-300 translate-y-2 opacity-0';
+            toast.innerHTML = `
+                <i class="fa-solid fa-circle-check text-terracotta-500"></i>
+                <span>${message}</span>
+            `;
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.classList.remove('translate-y-2', 'opacity-0');
+            }, 10);
+
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-2');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+    </script>
+</body>
+
+</html>
